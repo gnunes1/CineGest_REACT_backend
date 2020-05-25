@@ -1,2 +1,2 @@
 # CineGest_CORE_backend
-CRUD for web app CineGest with frontend made with React.js
+ASP .NET Core 3.1 CRUD for web app CineGest with frontend made with React.js
