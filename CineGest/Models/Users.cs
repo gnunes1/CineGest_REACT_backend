@@ -16,24 +16,31 @@ namespace CineGest.Models
         /// <summary>
         /// Nome do utilizador
         /// </summary>
-        [Required]
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Nome do utilizador
+        /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Idade do utilizador
+        /// Nome do utilizador
         /// </summary>
-        [Required]
-        public DateTime Age { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
-        /// Caminho da fotografia do utilizador
+        /// Data de nascimento do utilizador
         /// </summary>
-        public string Image { get; set; }
+        public DateTime DoB { get; set; }
+
+        /// <summary>
+        /// nome da fotografia do utilizador
+        /// </summary>
+        public string Avatar { get; set; }
 
         /// <summary>
         /// Referência o cargo
         /// </summary>
-        [Required]
         [ForeignKey(nameof(Role))]
         public int RoleFK { get; set; }
         public Roles Role { get; set; }

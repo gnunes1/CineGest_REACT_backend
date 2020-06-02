@@ -13,7 +13,6 @@ namespace CineGest.Models
         /// <summary>
         /// Nome do role
         /// </summary>
-        [Required]
         public string Name { get; set; }
     }
 }

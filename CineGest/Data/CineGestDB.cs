@@ -31,5 +31,19 @@ namespace CineGest.Data
 
         public DbSet<Roles> Roles { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Users>()
+                 .HasIndex(u => u.Email)
+                 .IsUnique();
+            builder.Entity<Movies>()
+                .HasIndex(m => m.Name)
+                .IsUnique();
+            builder.Entity<Cinemas>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+            builder.Entity<Roles>().HasData(new { Id = 1, Name = "Admin" }, new { Id = 2, Name = "User" });
+        }
     }
 }

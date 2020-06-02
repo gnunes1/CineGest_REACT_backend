@@ -10,8 +10,8 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": true,
       "environmentVariables": {
+        "ASPNETCORE_CORS_URLS": "http://localhost:3000",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

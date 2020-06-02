@@ -15,7 +15,6 @@ namespace CineGest.Models
         /// <summary>
         /// Nome do filme
         /// </summary>
-        [Required]
         public string Name { get; set; }
 
         /// <summary>
@@ -29,9 +28,13 @@ namespace CineGest.Models
         public string Genres { get; set; }
 
         /// <summary>
+        /// nome do cartaz do filme
+        /// </summary>
+        public string Poster { get; set; }
+
+        /// <summary>
         /// Duracao do filme
         /// </summary>
-        [Required]
         [DataType(DataType.Time)]
         public DateTime Duration { get; set; }
 
@@ -43,7 +46,6 @@ namespace CineGest.Models
         /// <summary>
         /// Serve para meter o filme em destaque
         /// </summary>
-        [Required]
         public bool Highlighted { get; set; }
 
         /// <summary>
