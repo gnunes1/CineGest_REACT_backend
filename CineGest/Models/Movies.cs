@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CineGest.Models
@@ -33,10 +32,9 @@ namespace CineGest.Models
         public string Poster { get; set; }
 
         /// <summary>
-        /// Duracao do filme
+        /// Duracao do filme em minutos
         /// </summary>
-        [DataType(DataType.Time)]
-        public DateTime Duration { get; set; }
+        public int Duration { get; set; }
 
         /// <summary>
         /// Idade minima para assistir ao filme

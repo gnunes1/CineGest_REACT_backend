@@ -20,19 +20,34 @@
     <Compile Remove="Migrations\20200601234443_DatabaseUpdate.Designer.cs" />
     <Compile Remove="Migrations\20200602011936_Seed.cs" />
     <Compile Remove="Migrations\20200602011936_Seed.Designer.cs" />
+    <Compile Remove="Migrations\20200612133442_Seed.cs" />
+    <Compile Remove="Migrations\20200612133442_Seed.Designer.cs" />
+    <Compile Remove="Migrations\20200612133735_DatabaseUpdate.cs" />
+    <Compile Remove="Migrations\20200612133735_DatabaseUpdate.Designer.cs" />
+    <Compile Remove="Migrations\20200612140102_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200612140102_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200612150809_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200612150809_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200612231855_Seed.cs" />
+    <Compile Remove="Migrations\20200612231855_Seed.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.5" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.6.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\movies\" />
+    <Folder Include="wwwroot\images\users\" />
   </ItemGroup>
 
 </Project>

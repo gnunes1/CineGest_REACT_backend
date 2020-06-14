@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CineGest.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Seed : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,10 +13,10 @@ namespace CineGest.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     Capacity = table.Column<int>(nullable: false),
-                    City = table.Column<string>(nullable: false),
-                    Location = table.Column<string>(nullable: false)
+                    City = table.Column<string>(nullable: true),
+                    Location = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,10 +29,11 @@ namespace CineGest.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Genres = table.Column<string>(nullable: true),
-                    Duration = table.Column<DateTime>(nullable: false),
+                    Poster = table.Column<string>(nullable: true),
+                    Duration = table.Column<int>(nullable: false),
                     Min_age = table.Column<int>(nullable: false),
                     Highlighted = table.Column<bool>(nullable: false)
                 },
@@ -47,7 +48,7 @@ namespace CineGest.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false)
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -90,9 +91,13 @@ namespace CineGest.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
-                    Age = table.Column<DateTime>(nullable: false),
-                    Image = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Hash = table.Column<string>(nullable: true),
+                    DoB = table.Column<DateTime>(nullable: false),
+                    Avatar = table.Column<string>(nullable: true),
+                    Token = table.Column<string>(nullable: true),
+                    TokenCreatedAt = table.Column<DateTime>(nullable: false),
                     RoleFK = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -133,6 +138,35 @@ namespace CineGest.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 1, "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 2, "User" });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "Avatar", "DoB", "Email", "Hash", "Name", "RoleFK", "Token", "TokenCreatedAt" },
+                values: new object[] { 1, null, new DateTime(2020, 6, 13, 14, 22, 52, 2, DateTimeKind.Utc).AddTicks(3893), "admin@admin", "8C-69-76-E5-B5-41-04-15-BD-E9-08-BD-4D-EE-15-DF-B1-67-A9-C8-73-FC-4B-B8-A8-1F-6F-2A-B4-48-A9-18", "Admin", 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cinema_Name",
+                table: "Cinema",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Movie_Name",
+                table: "Movie",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Sessions_CinemaFK",
                 table: "Sessions",
@@ -152,6 +186,13 @@ namespace CineGest.Migrations
                 name: "IX_Ticket_UserFK",
                 table: "Ticket",
                 column: "UserFK");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Email",
+                table: "User",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_RoleFK",

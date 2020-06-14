@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CineGest.Data;
+using CineGest.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CineGest.Data;
-using CineGest.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CineGest.Controllers
 {
@@ -14,17 +16,21 @@ namespace CineGest.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
+        public static IWebHostEnvironment _environment;
+
         private readonly CineGestDB _context;
 
-        public MoviesController(CineGestDB context)
+        public MoviesController(CineGestDB context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         // GET: api/Movies
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Movies>>> GetMovie()
         {
+
             return await _context.Movie.ToListAsync();
         }
 
@@ -78,12 +84,34 @@ namespace CineGest.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Movies>> PostMovies(Movies movies)
+        public async Task<ActionResult> PostMovies([FromForm][Bind("Name, Description, Min_age, Genres, Duration, Highlighted")] Movies Movie, [FromForm] IFormFile Poster)
         {
-            _context.Movie.Add(movies);
-            await _context.SaveChangesAsync();
+            try
+            {
+                Guid g;
+                g = Guid.NewGuid();
 
-            return CreatedAtAction("GetMovies", new { id = movies.Id }, movies);
+                string extensao = Path.GetExtension(Poster.FileName).ToLower();
+
+                // nome do ficheiro 
+                string nome = g.ToString();
+
+                using var fileStream = new FileStream(_environment.WebRootPath + "/images/movies/" + nome + extensao, FileMode.Create);
+                await Poster.CopyToAsync(fileStream);
+
+                Movie.Poster = nome;
+                _context.Movie.Add(Movie);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest("Um filme com o mesmo nome já foi inserido");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Erro inesperado.");
+            }
+            return Ok("Filme criado.");
         }
 
         // DELETE: api/Movies/5

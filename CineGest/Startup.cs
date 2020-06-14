@@ -1,12 +1,10 @@
 ﻿using CineGest.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using System;
 
 namespace CineGest
@@ -37,16 +35,6 @@ namespace CineGest
                                   });
             });
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(x =>
-                {
-                    x.TokenValidationParameters = new TokenValidationParameters();
-                });
-
             services.AddControllers();
 
             //****************************************************************************
@@ -55,6 +43,7 @@ namespace CineGest
                options.UseSqlServer(
                    Configuration.GetConnectionString("ConnectionDB")));
             //****************************************************************************
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,18 +55,26 @@ namespace CineGest
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseCors(MyAllowSpecificOrigins);
 
-            app.UseAuthorization();
+            //PUBLIC URLS
+            app.UseWhen((http) =>
+               !(
+                    http.Request.Path.Equals("/api/users/login") ||
+                    http.Request.Path.Equals("/api/users/signup") ||
+                    (http.Request.Path.StartsWithSegments("/api/movies") && http.Request.Method.Equals("GET"))
+                ),
+                (appBuilder) => appBuilder.UseVerifyToken());
+
 
             app.UseEndpoints(endpoints =>
             {

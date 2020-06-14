@@ -1,12 +1,12 @@
 ﻿using CineGest.Data;
 using CineGest.Models;
-using CineGest.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CineGest.Controllers
@@ -29,18 +29,30 @@ namespace CineGest.Controllers
             return await _context.User.ToListAsync();
         }
 
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Users>> GetUsers(int id)
+        // GET: api/Users/current
+        [HttpGet, Route("authenticated")]
+        public async Task<ActionResult<Users>> GetUsers()
         {
-            var users = await _context.User.FindAsync(id);
 
-            if (users == null)
+            //token do utilizador atual
+            var token = Request.Headers["Token"].ToString();
+
+            // pesquisar pelo token na base de dados
+            var user = await _context.User.Where(u => u.Token == token).FirstOrDefaultAsync();
+
+            // Call the next delegate/middleware in the pipeline
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return users;
+            var userRole = _context.Roles.Where(r => r.Id == user.RoleFK).Select(r => r.Name).First();
+
+            return Ok(new
+            {
+                name = user.Name,
+                role = userRole
+            });
         }
 
         // PUT: api/Users/5
@@ -73,6 +85,7 @@ namespace CineGest.Controllers
             }
 
             return NoContent();
+
         }
 
         // POST: api/Users
@@ -84,13 +97,20 @@ namespace CineGest.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost, Route("signup")]
-        public async Task<ActionResult> Signup(Users user)
+        public async Task<ActionResult> Signup([FromForm] DateTime DoB, [FromForm] string Email, [FromForm] string Name, [FromForm] string Password)
         {
+
+            Users user = new Users();
+            user.DoB = DoB;
+            user.Email = Email;
+            user.Name = Name;
+            user.TokenCreatedAt = new DateTime();
+
+            // role default -> User
             user.Role = await _context.Roles.FindAsync(2);
 
-            //hash gerada apartir da password
-            var hasher = new PasswordHasher<Users>();
-            user.Password = hasher.HashPassword(user, user.Password);
+            //password encriptada
+            user.Hash = BitConverter.ToString(SHA256.Create().ComputeHash(UTF8Encoding.Default.GetBytes(Password)));
 
             //cria user
             try
@@ -100,14 +120,14 @@ namespace CineGest.Controllers
             }
             catch (DbUpdateException)
             {
-                return BadRequest(new { message = "Já existe um utilizador com este email." });
+                return BadRequest("Já existe um utilizador com este email.");
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Erro inesperado." });
+                return BadRequest();
             }
+            return StatusCode(201, "Utilizador criado.");
 
-            return CreatedAtAction("GetUsers", new { id = user.Id }, user.Id);
         }
         /// <summary>
         /// Login do utilizador
@@ -115,30 +135,42 @@ namespace CineGest.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost, Route("login")]
-        public async Task<ActionResult> Login(Users user)
+        public async Task<ActionResult> Login([FromForm] string Email, [FromForm] string Password)
         {
-            var dbUser = await _context.User.Where(u => u.Email == user.Email).FirstOrDefaultAsync();
+            //verifica se o email existe
+            var dbUser = await _context.User.Where(u => u.Email == Email).FirstOrDefaultAsync();
 
             if (dbUser == null)
             {
-                return BadRequest();
+                return BadRequest("Email ou password incorretos.");
             }
 
-            //hash gerada apartir da password
-            var hasher = new PasswordHasher<Users>();
+            //verifica a password
+            String hash = BitConverter.ToString(SHA256.Create().ComputeHash(UTF8Encoding.Default.GetBytes(Password)));
 
-            if (hasher.VerifyHashedPassword(dbUser, dbUser.Password, user.Password) == PasswordVerificationResult.Failed)
+            if (hash != dbUser.Hash)
             {
-                return BadRequest();
+                return BadRequest("Email ou password incorretos.");
             }
 
+            //role do user
             var dbUserRole = _context.Roles.Where(r => r.Id == dbUser.RoleFK).Select(r => r.Name).First();
 
-            Token tk = new Token(dbUser.Id.ToString(), dbUserRole.ToString(), dbUser.Name);
+            //token
+            string token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
+            //update do token e da data de criação do token na base de dados referente ao dbUser
+            dbUser.Token = token;
+            dbUser.TokenCreatedAt = DateTime.UtcNow;
+
+            _context.SaveChanges();
 
             return Ok(new
             {
-                Token = tk.getToken()
+                token,
+                role = dbUserRole,
+                name = dbUser.Name
+
             });
 
         }

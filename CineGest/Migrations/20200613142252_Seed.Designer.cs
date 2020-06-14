@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineGest.Migrations
 {
     [DbContext(typeof(CineGestDB))]
-    [Migration("20200602010546_DatabaseUpdate")]
-    partial class DatabaseUpdate
+    [Migration("20200613142252_Seed")]
+    partial class Seed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,21 +32,19 @@ namespace CineGest.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Location")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Cinema");
                 });
@@ -59,14 +57,12 @@ namespace CineGest.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Duration")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<string>("Genres")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Highlighted")
@@ -76,17 +72,16 @@ namespace CineGest.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Poster")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Movie");
                 });
@@ -99,12 +94,23 @@ namespace CineGest.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "User"
+                        });
                 });
 
             modelBuilder.Entity("CineGest.Models.Sessions", b =>
@@ -176,32 +182,48 @@ namespace CineGest.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateNasc")
+                    b.Property<DateTime>("DoB")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("Hash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RoleFK")
                         .HasColumnType("int");
 
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TokenCreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.HasIndex("RoleFK");
 
                     b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DoB = new DateTime(2020, 6, 13, 14, 22, 52, 2, DateTimeKind.Utc).AddTicks(3893),
+                            Email = "admin@admin",
+                            Hash = "8C-69-76-E5-B5-41-04-15-BD-E9-08-BD-4D-EE-15-DF-B1-67-A9-C8-73-FC-4B-B8-A8-1F-6F-2A-B4-48-A9-18",
+                            Name = "Admin",
+                            RoleFK = 1,
+                            TokenCreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("CineGest.Models.Sessions", b =>

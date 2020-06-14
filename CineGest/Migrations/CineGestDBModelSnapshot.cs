@@ -57,8 +57,8 @@ namespace CineGest.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Duration")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<string>("Genres")
                         .HasColumnType("nvarchar(max)");
@@ -186,14 +186,20 @@ namespace CineGest.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Hash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RoleFK")
                         .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TokenCreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -204,6 +210,18 @@ namespace CineGest.Migrations
                     b.HasIndex("RoleFK");
 
                     b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DoB = new DateTime(2020, 6, 13, 14, 22, 52, 2, DateTimeKind.Utc).AddTicks(3893),
+                            Email = "admin@admin",
+                            Hash = "8C-69-76-E5-B5-41-04-15-BD-E9-08-BD-4D-EE-15-DF-B1-67-A9-C8-73-FC-4B-B8-A8-1F-6F-2A-B4-48-A9-18",
+                            Name = "Admin",
+                            RoleFK = 1,
+                            TokenCreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("CineGest.Models.Sessions", b =>

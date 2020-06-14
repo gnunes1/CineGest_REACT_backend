@@ -1,5 +1,6 @@
 ﻿using CineGest.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CineGest.Data
 {
@@ -43,7 +44,21 @@ namespace CineGest.Data
                 .HasIndex(c => c.Name)
                 .IsUnique();
 
-            builder.Entity<Roles>().HasData(new { Id = 1, Name = "Admin" }, new { Id = 2, Name = "User" });
+            builder.Entity<Roles>().HasData(
+                new { Id = 1, Name = "Admin" },
+                new { Id = 2, Name = "User" }
+                );
+
+            builder.Entity<Users>().HasData(new
+            {
+                Id = 1,
+                Name = "Admin",
+                Email = "admin@admin",
+                RoleFK = 1,
+                DoB = DateTime.UtcNow,
+                TokenCreatedAt = new DateTime(),
+                Hash = "8C-69-76-E5-B5-41-04-15-BD-E9-08-BD-4D-EE-15-DF-B1-67-A9-C8-73-FC-4B-B8-A8-1F-6F-2A-B4-48-A9-18"
+            });
         }
     }
 }

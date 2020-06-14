@@ -14,7 +14,7 @@ namespace CineGest.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Nome do utilizador
+        /// Email do utilizador
         /// </summary>
         public string Email { get; set; }
 
@@ -24,9 +24,9 @@ namespace CineGest.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// Nome do utilizador
+        /// Password do utilizador em formato de hash
         /// </summary>
-        public string Password { get; set; }
+        public string Hash { get; set; }
 
         /// <summary>
         /// Data de nascimento do utilizador
@@ -37,6 +37,16 @@ namespace CineGest.Models
         /// nome da fotografia do utilizador
         /// </summary>
         public string Avatar { get; set; }
+
+        /// <summary>
+        /// token de sessão do utilizador
+        /// </summary>
+        public string Token { get; set; }
+
+        /// <summary>
+        /// data de criação token de sessão do utilizador
+        /// </summary>
+        public DateTime TokenCreatedAt { get; set; }
 
         /// <summary>
         /// Referência o cargo
