@@ -1,51 +1,36 @@
-﻿using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Template;
-using System.Collections;
+﻿using System.Collections.Generic;
 
 namespace CineGest
 {
     public static class Routes
     {
-        public static Hashtable allowedMethods = new Hashtable(){
-             { "api/users/authenticated", "GET" },
-             { "api/movies", "GET,POST" },
-             { "api/movies/{id}", "GET,POST" }
-
-        };
-        public static Hashtable allowedRoles = new Hashtable(){
-             { "api/users/authenticated", "Admin,User" },
-             { "api/movies", "Admin,User" },
-             { "api/movies/{id}", "Admin,User" }
-
-
-        };
-
-
-        public static RouteValueDictionary Match(string routeTemplate, string requestPath)
+        //private routes
+        public static List<Rule> Rules = new List<Rule>()
         {
-            var template = TemplateParser.Parse(routeTemplate);
+            //Users
+            new Rule(new string[]{"GET"}, "/api/users", new string[]{"Admin"}),
+            new Rule(new string[]{"GET"}, "/api/users/authenticated", new string[]{"Admin", "User"}),
+            new Rule(new string[]{"PUT"}, "/api/users/{id}", new string[]{"Admin", "User"}),
 
-            var matcher = new TemplateMatcher(template, GetDefaults(template));
+            //Movies
+            new Rule(new string[]{"GET", "POST"}, "/api/users/authenticated", new string[]{"Admin", "User"}),
+            new Rule(new string[]{"PUT" }, "/api/users/{id}", new string[]{"Admin", "User"})
+        };
+    }
 
-            var values = new RouteValueDictionary();
-
-            return matcher.TryMatch(requestPath, values) ? values : null;
+    public class Rule
+    {
+        public Rule(string[] method, string route, string[] roles)
+        {
+            Method = method;
+            Route = route;
+            Roles = roles;
         }
 
-        // This method extracts the default argument values from the template.
-        private static RouteValueDictionary GetDefaults(RouteTemplate parsedTemplate)
-        {
-            var result = new RouteValueDictionary();
+        public string[] Method { get; set; }
 
-            foreach (var parameter in parsedTemplate.Parameters)
-            {
-                if (parameter.DefaultValue != null)
-                {
-                    result.Add(parameter.Name, parameter.DefaultValue);
-                }
-            }
+        public string Route { get; set; }
 
-            return result;
-        }
+        public string[] Roles { get; set; }
     }
 }

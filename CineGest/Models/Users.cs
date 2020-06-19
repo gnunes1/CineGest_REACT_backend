@@ -46,7 +46,7 @@ namespace CineGest.Models
         /// <summary>
         /// data de criação token de sessão do utilizador
         /// </summary>
-        public DateTime TokenCreatedAt { get; set; }
+        public DateTime TokenExpiresAt { get; set; }
 
         /// <summary>
         /// Referência o cargo

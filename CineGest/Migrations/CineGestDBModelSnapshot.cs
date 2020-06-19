@@ -198,7 +198,7 @@ namespace CineGest.Migrations
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("TokenCreatedAt")
+                    b.Property<DateTime>("TokenExpiresAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -215,12 +215,12 @@ namespace CineGest.Migrations
                         new
                         {
                             Id = 1,
-                            DoB = new DateTime(2020, 6, 13, 14, 22, 52, 2, DateTimeKind.Utc).AddTicks(3893),
+                            DoB = new DateTime(2020, 6, 19, 17, 20, 7, 224, DateTimeKind.Utc).AddTicks(36),
                             Email = "admin@admin",
                             Hash = "8C-69-76-E5-B5-41-04-15-BD-E9-08-BD-4D-EE-15-DF-B1-67-A9-C8-73-FC-4B-B8-A8-1F-6F-2A-B4-48-A9-18",
                             Name = "Admin",
                             RoleFK = 1,
-                            TokenCreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            TokenExpiresAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 

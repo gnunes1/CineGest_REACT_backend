@@ -104,7 +104,7 @@ namespace CineGest.Controllers
             user.DoB = DoB;
             user.Email = Email;
             user.Name = Name;
-            user.TokenCreatedAt = new DateTime();
+            user.TokenExpiresAt = new DateTime();
 
             // role default -> User
             user.Role = await _context.Roles.FindAsync(2);
@@ -145,7 +145,7 @@ namespace CineGest.Controllers
                 return BadRequest("Email ou password incorretos.");
             }
 
-            //verifica a password
+            //cria token para o utilizador
             String hash = BitConverter.ToString(SHA256.Create().ComputeHash(UTF8Encoding.Default.GetBytes(Password)));
 
             if (hash != dbUser.Hash)
@@ -161,7 +161,7 @@ namespace CineGest.Controllers
 
             //update do token e da data de criação do token na base de dados referente ao dbUser
             dbUser.Token = token;
-            dbUser.TokenCreatedAt = DateTime.UtcNow;
+            dbUser.TokenExpiresAt = DateTime.UtcNow.AddDays(2);
 
             _context.SaveChanges();
 

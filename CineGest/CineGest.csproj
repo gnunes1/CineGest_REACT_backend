@@ -30,6 +30,10 @@
     <Compile Remove="Migrations\20200612150809_InitialMigration.Designer.cs" />
     <Compile Remove="Migrations\20200612231855_Seed.cs" />
     <Compile Remove="Migrations\20200612231855_Seed.Designer.cs" />
+    <Compile Remove="Migrations\20200613142252_Seed.cs" />
+    <Compile Remove="Migrations\20200613142252_Seed.Designer.cs" />
+    <Compile Remove="Migrations\20200619171656_tokenExpirationDateColumn.cs" />
+    <Compile Remove="Migrations\20200619171656_tokenExpirationDateColumn.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

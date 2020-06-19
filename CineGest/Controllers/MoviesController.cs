@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,16 +28,35 @@ namespace CineGest.Controllers
         }
 
         // GET: api/Movies
+        //retorna os todos os filmes com informação limitada
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movies>>> GetMovie()
+        public async Task<IEnumerable> GetMovies()
         {
+            var movies = await _context.Movie.Select(m => new { m.Id, m.Name, m.Poster }).ToListAsync();
 
+            List<(int, string, FileResult)> movies2 = new List<(int, string, FileResult)>();
+
+
+            foreach (var item in movies)
+            {
+                var myfile = System.IO.File.ReadAllBytes(_environment.WebRootPath + "/images/movies/" + item.Poster + ".jpg");
+                movies2.Add((item.Id, item.Name, new FileContentResult(myfile, "application/pdf")));
+            }
+
+            return movies2;
+        }
+
+        // GET: api/Movies 
+        //retorna todos os filmes com toda a informação
+        [HttpGet, Route("moviesdetails")]
+        public async Task<ActionResult<IEnumerable<Movies>>> GetMovieDetails()
+        {
             return await _context.Movie.ToListAsync();
         }
 
         // GET: api/Movies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movies>> GetMovies(int id)
+        public async Task<ActionResult<Movies>> GetMovie(int id)
         {
             var movies = await _context.Movie.FindAsync(id);
 

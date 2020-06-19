@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CineGest.Migrations
 {
-    public partial class Seed : Migration
+    public partial class DatabaseAndSeed : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -97,7 +97,7 @@ namespace CineGest.Migrations
                     DoB = table.Column<DateTime>(nullable: false),
                     Avatar = table.Column<string>(nullable: true),
                     Token = table.Column<string>(nullable: true),
-                    TokenCreatedAt = table.Column<DateTime>(nullable: false),
+                    TokenExpiresAt = table.Column<DateTime>(nullable: false),
                     RoleFK = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -150,8 +150,8 @@ namespace CineGest.Migrations
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "Id", "Avatar", "DoB", "Email", "Hash", "Name", "RoleFK", "Token", "TokenCreatedAt" },
-                values: new object[] { 1, null, new DateTime(2020, 6, 13, 14, 22, 52, 2, DateTimeKind.Utc).AddTicks(3893), "admin@admin", "8C-69-76-E5-B5-41-04-15-BD-E9-08-BD-4D-EE-15-DF-B1-67-A9-C8-73-FC-4B-B8-A8-1F-6F-2A-B4-48-A9-18", "Admin", 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                columns: new[] { "Id", "Avatar", "DoB", "Email", "Hash", "Name", "RoleFK", "Token", "TokenExpiresAt" },
+                values: new object[] { 1, null, new DateTime(2020, 6, 19, 17, 20, 7, 224, DateTimeKind.Utc).AddTicks(36), "admin@admin", "8C-69-76-E5-B5-41-04-15-BD-E9-08-BD-4D-EE-15-DF-B1-67-A9-C8-73-FC-4B-B8-A8-1F-6F-2A-B4-48-A9-18", "Admin", 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cinema_Name",
