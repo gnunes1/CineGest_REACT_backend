@@ -1,12 +1,10 @@
-﻿using System;
+﻿using CineGest.Data;
+using CineGest.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CineGest.Data;
-using CineGest.Models;
 
 namespace CineGest.Controllers
 {
@@ -23,16 +21,23 @@ namespace CineGest.Controllers
 
         // GET: api/Sessions
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sessions>>> GetCinema_Movie()
+        public async Task<ActionResult<IEnumerable<Sessions>>> GetSessions()
         {
-            return await _context.Cinema_Movie.ToListAsync();
+            return await _context.Sessions.ToListAsync();
         }
+
+        /*/// GET: api/Sessions/highlighted
+        [HttpGet]
+        public async Task<ActionResult> GetHighlightedMovies()
+        {
+            return await _context.Sessions.Include(s => s.Movie).ThenInclude()
+        }*/
 
         // GET: api/Sessions/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Sessions>> GetSessions(int id)
         {
-            var sessions = await _context.Cinema_Movie.FindAsync(id);
+            var sessions = await _context.Sessions.FindAsync(id);
 
             if (sessions == null)
             {
@@ -80,7 +85,7 @@ namespace CineGest.Controllers
         [HttpPost]
         public async Task<ActionResult<Sessions>> PostSessions(Sessions sessions)
         {
-            _context.Cinema_Movie.Add(sessions);
+            _context.Sessions.Add(sessions);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetSessions", new { id = sessions.Id }, sessions);
@@ -90,13 +95,13 @@ namespace CineGest.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Sessions>> DeleteSessions(int id)
         {
-            var sessions = await _context.Cinema_Movie.FindAsync(id);
+            var sessions = await _context.Sessions.FindAsync(id);
             if (sessions == null)
             {
                 return NotFound();
             }
 
-            _context.Cinema_Movie.Remove(sessions);
+            _context.Sessions.Remove(sessions);
             await _context.SaveChangesAsync();
 
             return sessions;
@@ -104,7 +109,7 @@ namespace CineGest.Controllers
 
         private bool SessionsExists(int id)
         {
-            return _context.Cinema_Movie.Any(e => e.Id == id);
+            return _context.Sessions.Any(e => e.Id == id);
         }
     }
 }

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using CineGest.Data;
+using CineGest.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CineGest.Data;
-using CineGest.Models;
+using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CineGest.Controllers
 {
@@ -23,20 +21,46 @@ namespace CineGest.Controllers
 
         // GET: api/Tickets
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tickets>>> GetTicket()
+        public async Task<ActionResult<IEnumerable>> GetTickets()
         {
-            return await _context.Ticket.ToListAsync();
+            return await _context.Ticket.Select(t => new
+            {
+                t.Id,
+                Movie = t.Cinema_Movie.Movie.Name,
+                t.Cinema_Movie.Start,
+                t.Cinema_Movie.End,
+                Cinema = t.Cinema_Movie.Cinema.Name,
+                t.User.Email
+            }).ToListAsync();
+        }
+
+        // GET: api/Tickets
+        [HttpGet, Route("current")]
+        public async Task<ActionResult<IEnumerable>> GetTicketsCurrent()
+        {
+            return await _context.Ticket.Where(t => t.User.Token == HttpContext.Request.Headers["token"])
+                .Select(t => new
+                {
+                    t.Id,
+                    t.User.Email,
+                    t.Seat,
+                    Cinema = t.Cinema_Movie.Cinema.Name,
+                    t.Cinema_Movie.Start,
+                    t.Cinema_Movie.End,
+                    Movie = t.Cinema_Movie.Movie.Name
+                })
+                .ToListAsync();
         }
 
         // GET: api/Tickets/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tickets>> GetTickets(int id)
+        public async Task<ActionResult<Tickets>> GetTicket(int id)
         {
             var tickets = await _context.Ticket.FindAsync(id);
 
             if (tickets == null)
             {
-                return NotFound();
+                return NotFound("Nenhum ticket encontrado com esse ID.");
             }
 
             return tickets;
@@ -46,14 +70,10 @@ namespace CineGest.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTickets(int id, Tickets tickets)
+        public async Task<IActionResult> PutTickets(int id, Tickets ticket)
         {
-            if (id != tickets.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(tickets).State = EntityState.Modified;
+            _context.Entry(ticket).State = EntityState.Modified;
 
             try
             {
@@ -61,9 +81,9 @@ namespace CineGest.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TicketsExists(id))
+                if (!TicketExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Nenhum ticket encontrado com esse ID.");
                 }
                 else
                 {
@@ -88,21 +108,21 @@ namespace CineGest.Controllers
 
         // DELETE: api/Tickets/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Tickets>> DeleteTickets(int id)
+        public async Task<ActionResult<Tickets>> DeleteTicket(int id)
         {
-            var tickets = await _context.Ticket.FindAsync(id);
-            if (tickets == null)
+            var ticket = await _context.Ticket.FindAsync(id);
+            if (ticket == null)
             {
-                return NotFound();
+                return NotFound("Nenhum ticket encontrado com esse ID.");
             }
 
-            _context.Ticket.Remove(tickets);
+            _context.Ticket.Remove(ticket);
             await _context.SaveChangesAsync();
 
-            return tickets;
+            return ticket;
         }
 
-        private bool TicketsExists(int id)
+        private bool TicketExists(int id)
         {
             return _context.Ticket.Any(e => e.Id == id);
         }

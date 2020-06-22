@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using CineGest.Data;
+using CineGest.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CineGest.Data;
-using CineGest.Models;
+using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CineGest.Controllers
 {
@@ -23,9 +21,9 @@ namespace CineGest.Controllers
 
         // GET: api/Roles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Roles>>> GetRoles()
+        public async Task<ActionResult<IEnumerable>> GetRoles()
         {
-            return await _context.Roles.ToListAsync();
+            return await _context.Roles.Select(r => r.Name).ToListAsync();
         }
 
         // GET: api/Roles/5

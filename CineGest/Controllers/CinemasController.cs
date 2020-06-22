@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using CineGest.Data;
+using CineGest.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CineGest.Data;
-using CineGest.Models;
+using System;
+using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CineGest.Controllers
 {
@@ -23,86 +22,110 @@ namespace CineGest.Controllers
 
         // GET: api/Cinemas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cinemas>>> GetCinema()
+        public async Task<IEnumerable> GetCinemas()
         {
-            return await _context.Cinema.ToListAsync();
+            return await _context.Cinema.Select(m => new { m.Id, m.Name, m.City, m.Location, m.Capacity }).ToListAsync();
         }
 
-        // GET: api/Cinemas/5
+        // GET: api/cinemas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cinemas>> GetCinemas(int id)
+        public async Task<ActionResult<Cinemas>> GetCinema(int id)
         {
-            var cinemas = await _context.Cinema.FindAsync(id);
+            var cinema = await _context.Cinema.FindAsync(id);
 
-            if (cinemas == null)
+            if (cinema == null)
             {
-                return NotFound();
+                return NotFound("Não existe nenhum cinema com esse ID.");
             }
 
-            return cinemas;
+            return cinema;
         }
 
         // PUT: api/Cinemas/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCinemas(int id, Cinemas cinemas)
+        public async Task<IActionResult> PutCinema(int id, [FromForm] string Name, [FromForm] string Location, [FromForm] string City, [FromForm] int Capacity)
         {
-            if (id != cinemas.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(cinemas).State = EntityState.Modified;
-
             try
             {
+                var cinema = await _context.Cinema.FindAsync(id);
+                cinema.Name = Name;
+                cinema.Location = Location;
+                cinema.Capacity = Capacity;
+                cinema.City = City;
+
+                _context.Entry(cinema).State = EntityState.Modified;
+
+
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException)
             {
-                if (!CinemasExists(id))
+                if (!CinemaExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Não existe nenhum cinema com esse ID.");
+                }
+                else if (_context.Cinema.Where(c => c.Name == Name).FirstOrDefault() != null)
+                {
+                    return BadRequest("Já existe um cinema com esse nome.");
                 }
                 else
                 {
-                    throw;
+                    return BadRequest("Erro inesperado.");
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Cinemas
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Cinemas>> PostCinemas(Cinemas cinemas)
+        public async Task<ActionResult<Cinemas>> PostCinema([FromForm] string Name, [FromForm] string Location, [FromForm] string City, [FromForm] int Capacity)
         {
-            _context.Cinema.Add(cinemas);
-            await _context.SaveChangesAsync();
+            try
+            {
+                Cinemas cinema = new Cinemas
+                {
+                    Name = Name,
+                    Location = Location,
+                    Capacity = Capacity,
+                    City = City
+                };
 
-            return CreatedAtAction("GetCinemas", new { id = cinemas.Id }, cinemas);
+                _context.Cinema.Add(cinema);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest("Já existe um cinema com esse nome.");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Erro inesperado.");
+            }
+            return StatusCode(201);
         }
 
         // DELETE: api/Cinemas/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Cinemas>> DeleteCinemas(int id)
+        public async Task<ActionResult<Cinemas>> DeleteCinema(int id)
         {
             var cinemas = await _context.Cinema.FindAsync(id);
             if (cinemas == null)
             {
-                return NotFound();
+                return NotFound("Não existe nenhum cinema com esse ID.");
             }
 
             _context.Cinema.Remove(cinemas);
             await _context.SaveChangesAsync();
 
-            return cinemas;
+            return Ok();
         }
 
-        private bool CinemasExists(int id)
+        private bool CinemaExists(int id)
         {
             return _context.Cinema.Any(e => e.Id == id);
         }

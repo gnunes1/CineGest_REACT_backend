@@ -22,7 +22,7 @@ namespace CineGest
             var token = httpContext.Request.Headers["token"].ToString();
 
             // pesquisar o utilizador pelo token na base de dados e verifica a data de expiração do token
-            var user = context.User.Where(u => u.Token == token && (u.TokenExpiresAt - DateTime.Now).TotalDays < 2).FirstOrDefault();
+            var user = context.User.Where(u => u.Token == token && u.TokenExpiresAt > DateTime.Now).FirstOrDefault();
 
             // Call the next delegate/middleware in the pipeline
             if (user != null)
@@ -30,8 +30,10 @@ namespace CineGest
                 //role do user
                 var userRole = context.Roles.Where(r => r.Id == user.RoleFK).Select(r => r.Name).First();
 
-                var allowed = Routes.Rules.Any(rule => rule.Method.Contains(httpContext.Request.Method) && rule.Roles.Contains(userRole)
-                && httpContext.Request.Path.ToString().Contains(rule.Route));
+                var routeValues = httpContext.Request.RouteValues;
+
+                var allowed = Routes.Rules.Any(rule => rule.Action.Equals(routeValues.ElementAt(0).Value)
+                && rule.Controller.Equals(routeValues.ElementAt(1).Value) && rule.Roles.Contains(userRole));
 
                 if (allowed)
                 {

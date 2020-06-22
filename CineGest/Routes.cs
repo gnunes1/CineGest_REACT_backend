@@ -8,28 +8,47 @@ namespace CineGest
         public static List<Rule> Rules = new List<Rule>()
         {
             //Users
-            new Rule(new string[]{"GET"}, "/api/users", new string[]{"Admin"}),
-            new Rule(new string[]{"GET"}, "/api/users/authenticated", new string[]{"Admin", "User"}),
-            new Rule(new string[]{"PUT"}, "/api/users/{id}", new string[]{"Admin", "User"}),
+            new Rule("GetAuthenticated", "Users", new string[]{"Admin" }),
+            new Rule("GetUser", "Users", new string[]{"Admin" }),
+            new Rule("GetOthers", "Users", new string[]{"Admin" }),
+            new Rule("PostUser", "Users", new string[]{"Admin" }),
+            new Rule("PutUser", "Users", new string[]{"Admin" }),
+            new Rule("PutCurrentUser", "Users", new string[]{"Admin", "User" }),
+            new Rule("DeleteUser", "Users", new string[]{"Admin"}),
+            new Rule("DeleteCurrent", "Users", new string[]{"User"}),
+
+            //Cinemas
+            new Rule("GetCinemas", "Cinemas", new string[]{"Admin"}),
+            new Rule("GetCinema", "Cinemas", new string[]{"Admin"}),
+            new Rule("PutCinema", "Cinemas", new string[]{"Admin"}),
+            new Rule("PostCinema", "Cinemas", new string[]{"Admin"}),
+            new Rule("DeleteCinema", "Cinemas", new string[]{"Admin"}),
 
             //Movies
-            new Rule(new string[]{"GET", "POST"}, "/api/users/authenticated", new string[]{"Admin", "User"}),
-            new Rule(new string[]{"PUT" }, "/api/users/{id}", new string[]{"Admin", "User"})
+            new Rule("GetMoviesDetails", "Movies", new string[]{"Admin"}),
+            new Rule("PutMovie", "Movies", new string[]{"Admin"}),
+            new Rule("PostMovie", "Movies", new string[]{"Admin"}),
+            new Rule("DeleteMovie", "Movies", new string[]{"Admin"}),
+
+            //Tickets
+            new Rule("GetTickets", "Tickets", new string[]{"Admin"}),
+            new Rule("PostTicket", "Tickets", new string[]{"Admin", "User"}),
+            new Rule("GetTicketsCurrent", "Tickets", new string[]{"Admin", "User"}),
         };
     }
 
     public class Rule
     {
-        public Rule(string[] method, string route, string[] roles)
+        public Rule(string action, string controller, string[] roles)
         {
-            Method = method;
-            Route = route;
+            Action = action;
+            Controller = controller;
             Roles = roles;
         }
 
-        public string[] Method { get; set; }
+        public string Action { get; set; }
 
-        public string Route { get; set; }
+        public string Controller { get; set; }
 
         public string[] Roles { get; set; }
     }

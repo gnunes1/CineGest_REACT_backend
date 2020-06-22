@@ -20,11 +20,9 @@ namespace CineGest.Data
 
         public DbSet<Cinemas> Cinema { get; set; }
 
-        public DbSet<Sessions> Cinema_Movie { get; set; }
+        public DbSet<Sessions> Sessions { get; set; }
 
         public DbSet<Movies> Movie { get; set; }
-
-        public DbSet<Sessions> Room_Movie { get; set; }
 
         public DbSet<Tickets> Ticket { get; set; }
 

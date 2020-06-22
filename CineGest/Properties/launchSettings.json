@@ -11,6 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "environmentVariables": {
+        "ASPTNETCORE_APP_URL": "https://localhost:44348/",
         "ASPNETCORE_CORS_URLS": "http://localhost:3000",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

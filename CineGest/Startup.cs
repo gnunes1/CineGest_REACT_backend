@@ -69,9 +69,11 @@ namespace CineGest
             //PUBLIC URLS
             app.UseWhen((http) =>
                !(
-                    http.Request.Path.Equals("/api/users/login") ||
-                    http.Request.Path.Equals("/api/users/signup") ||
-                    (http.Request.Path.StartsWithSegments("/api/movies") && http.Request.Method.Equals("GET"))
+                    http.Request.RouteValues.Values.Contains("Login") && http.Request.RouteValues.Values.Contains("Users") ||
+                    http.Request.RouteValues.Values.Contains("Signup") && http.Request.RouteValues.Values.Contains("Users") ||
+                    http.Request.RouteValues.Values.Contains("GetMovies") && http.Request.RouteValues.Values.Contains("Movies") ||
+                    http.Request.RouteValues.Values.Contains("GetMovie") && http.Request.RouteValues.Values.Contains("Movies") ||
+                    http.Request.RouteValues.Values.Contains("GetHighlightedMovies") && http.Request.RouteValues.Values.Contains("Movies")
                 ),
                 (appBuilder) => appBuilder.UseVerifyToken());
 

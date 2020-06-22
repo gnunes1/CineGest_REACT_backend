@@ -31,12 +31,6 @@ namespace CineGest.Models
         public Movies Movie { get; set; }
 
         /// <summary>
-        /// hora de início do filme
-        /// </summary>
-        [DataType(DataType.Time)]
-        public DateTime Start_Time { get; set; }
-
-        /// <summary>
         /// data de início do filme
         /// </summary>
         public DateTime Start { get; set; }
