@@ -34,6 +34,13 @@ namespace CineGest
             new Rule("GetTickets", "Tickets", new string[]{"Admin"}),
             new Rule("PostTicket", "Tickets", new string[]{"Admin", "User"}),
             new Rule("GetTicketsCurrent", "Tickets", new string[]{"Admin", "User"}),
+
+            //Sessions
+            new Rule("GetSessions", "Sessions", new string[]{"Admin"}),
+            new Rule("PostSession", "Sessions", new string[]{"Admin"}),
+            new Rule("PutSession", "Sessions", new string[]{"Admin"}),
+            new Rule("PutSessionSets", "Sessions", new string[]{"Admin", "User"}),
+            new Rule("DeleteSession", "Sessions", new string[]{"Admin"}),
         };
     }
 

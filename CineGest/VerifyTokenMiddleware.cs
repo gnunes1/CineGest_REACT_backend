@@ -19,6 +19,7 @@ namespace CineGest
 
         public async Task InvokeAsync(HttpContext httpContext, CineGestDB context)
         {
+
             var token = httpContext.Request.Headers["token"].ToString();
 
             // pesquisar o utilizador pelo token na base de dados e verifica a data de expiração do token

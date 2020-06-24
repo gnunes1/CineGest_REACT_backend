@@ -73,7 +73,10 @@ namespace CineGest
                     http.Request.RouteValues.Values.Contains("Signup") && http.Request.RouteValues.Values.Contains("Users") ||
                     http.Request.RouteValues.Values.Contains("GetMovies") && http.Request.RouteValues.Values.Contains("Movies") ||
                     http.Request.RouteValues.Values.Contains("GetMovie") && http.Request.RouteValues.Values.Contains("Movies") ||
-                    http.Request.RouteValues.Values.Contains("GetHighlightedMovies") && http.Request.RouteValues.Values.Contains("Movies")
+                    http.Request.RouteValues.Values.Contains("GetHighlightedMovies") && http.Request.RouteValues.Values.Contains("Movies") ||
+                    http.Request.RouteValues.Values.Contains("GetHighlightedMovies") && http.Request.RouteValues.Values.Contains("Sessions") ||
+                    http.Request.RouteValues.Values.Contains("GetSessionsByMovie") && http.Request.RouteValues.Values.Contains("Sessions")
+
                 ),
                 (appBuilder) => appBuilder.UseVerifyToken());
 

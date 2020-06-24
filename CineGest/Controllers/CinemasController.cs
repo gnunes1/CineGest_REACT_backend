@@ -47,6 +47,13 @@ namespace CineGest.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCinema(int id, [FromForm] string Name, [FromForm] string Location, [FromForm] string City, [FromForm] int Capacity)
         {
+
+            var anySession = await _context.Sessions.Where(s => s.Cinema.Id == id).AnyAsync();
+            if (anySession == false)
+            {
+                return NotFound("Não é possivel alterar este cinema, pois há sessões associadas.");
+            }
+
             try
             {
                 var cinema = await _context.Cinema.FindAsync(id);
@@ -117,6 +124,12 @@ namespace CineGest.Controllers
             if (cinemas == null)
             {
                 return NotFound("Não existe nenhum cinema com esse ID.");
+            }
+
+            var anySession = await _context.Sessions.Where(s => s.Cinema.Id == id).AnyAsync();
+            if (anySession == false)
+            {
+                return NotFound("Não é possivel apagar este cinema, pois há sessões associadas.");
             }
 
             _context.Cinema.Remove(cinemas);

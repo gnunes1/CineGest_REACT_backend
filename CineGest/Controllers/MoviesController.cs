@@ -50,7 +50,7 @@
         [HttpGet]
         public async Task<IEnumerable> GetMovies()
         {
-            var movies = await _context.Movie.Select(m => new { m.Id, m.Name, m.Poster }).ToListAsync();
+            var movies = await _context.Movie.Select(m => new { m.Id, m.Name, m.Poster, m.Duration }).ToListAsync();
             return movies;
         }
         // GET: api/Movies
@@ -97,7 +97,20 @@
                 return NotFound();
             }
 
-            return await _context.Movie.Select(m => new Movies { Id = m.Id, Highlighted = m.Highlighted, Min_age = m.Min_age, Name = m.Name, Genres = m.Genres, Description = m.Description, Poster = m.Poster, Duration = m.Duration }).Where(m => m.Id == id).FirstOrDefaultAsync();
+            return await _context.Movie
+                .Select(m => new Movies
+                {
+                    Id = m.Id,
+                    Highlighted = m.Highlighted,
+                    Min_age = m.Min_age,
+                    Name = m.Name,
+                    Genres = m.Genres,
+                    Description = m.Description,
+                    Poster = m.Poster,
+                    Duration = m.Duration
+                })
+                .Where(m => m.Id == id)
+                .FirstOrDefaultAsync();
         }
 
         // PUT: api/Movies/5
@@ -113,6 +126,13 @@
         public async Task<IActionResult> PutMovie(int id, [FromForm] string Name, [FromForm] string Description, [FromForm] int Min_age,
             [FromForm] string Genres, [FromForm] int Duration, [FromForm] bool Highlighted, [FromForm] IFormFile Poster)
         {
+
+            var anySession = await _context.Sessions.Where(s => s.Movie.Id == id).AnyAsync();
+            if (anySession == false)
+            {
+                return NotFound("Não é possivel apagar este filme, pois há sessões associadas.");
+            }
+
             try
             {
                 var movie = await _context.Movie.FindAsync(id);
@@ -255,6 +275,12 @@
             if (movie == null)
             {
                 return NotFound("Não existe nenhum cinema com esse ID.");
+            }
+
+            var anySession = await _context.Sessions.Where(s => s.Movie.Id == id).AnyAsync();
+            if (anySession == false)
+            {
+                return NotFound("Não é possivel apagar este filme, pois há sessões associadas.");
             }
 
             _context.Movie.Remove(movie);
