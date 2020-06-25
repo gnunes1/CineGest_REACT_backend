@@ -63,7 +63,6 @@
         public async Task<IEnumerable> GetHighlightedMovies()
         {
             var movies = await _context.Movie.Where(m => m.Highlighted == true)
-                //.Join(_context.Sessions)
                 .Select(m => new { m.Id, m.Name, m.Poster })
                 .ToListAsync();
             return movies;
@@ -101,7 +100,6 @@
                 .Select(m => new Movies
                 {
                     Id = m.Id,
-                    Highlighted = m.Highlighted,
                     Min_age = m.Min_age,
                     Name = m.Name,
                     Genres = m.Genres,

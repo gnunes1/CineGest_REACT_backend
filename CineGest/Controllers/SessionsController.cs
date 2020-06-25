@@ -24,7 +24,19 @@ namespace CineGest.Controllers
         [HttpPost, Route("movie")]
         public async Task<ActionResult<IEnumerable>> GetSessionsByMovie([FromForm] int Movie)
         {
-            return await _context.Sessions.Where(s => s.Movie.Id == Movie).ToListAsync();
+            return await _context.Sessions.Where(s => s.Movie.Id == Movie)
+                .Select(s => new
+                {
+                    s.Id,
+                    s.Cinema.Name,
+                    s.Cinema.City,
+                    s.Cinema.Location,
+                    Seats = s.Occupated_seats,
+                    s.Cinema.Capacity,
+                    Start = s.Start.ToString("yyyy-MM-dd HH:mm"),
+                    End = s.End.ToString("yyyy-MM-dd HH:mm"),
+
+                }).OrderBy(s => s.Name).ThenBy(s => s.City).ThenBy(s => s.Location).ToListAsync();
         }
 
         // GET: api/Sessions

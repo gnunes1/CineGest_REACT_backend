@@ -8,14 +8,16 @@ namespace CineGest
         public static List<Rule> Rules = new List<Rule>()
         {
             //Users
-            new Rule("GetAuthenticated", "Users", new string[]{"Admin" }),
+            new Rule("GetAuthenticated", "Users", new string[]{"Admin", "User" }),
             new Rule("GetUser", "Users", new string[]{"Admin" }),
+            new Rule("GetCurrent", "Users", new string[]{"Admin", "User" }),
             new Rule("GetOthers", "Users", new string[]{"Admin" }),
             new Rule("PostUser", "Users", new string[]{"Admin" }),
             new Rule("PutUser", "Users", new string[]{"Admin" }),
             new Rule("PutCurrentUser", "Users", new string[]{"Admin", "User" }),
             new Rule("DeleteUser", "Users", new string[]{"Admin"}),
             new Rule("DeleteCurrent", "Users", new string[]{"User"}),
+            new Rule("Logout", "Users", new string[]{"Admin", "User"}),
 
             //Cinemas
             new Rule("GetCinemas", "Cinemas", new string[]{"Admin"}),
@@ -32,8 +34,9 @@ namespace CineGest
 
             //Tickets
             new Rule("GetTickets", "Tickets", new string[]{"Admin"}),
-            new Rule("PostTicket", "Tickets", new string[]{"Admin", "User"}),
+            new Rule("BuyTicket", "Tickets", new string[]{"Admin", "User"}),
             new Rule("GetTicketsCurrent", "Tickets", new string[]{"Admin", "User"}),
+            new Rule("DeleteTicket", "Tickets", new string[]{"Admin"}),
 
             //Sessions
             new Rule("GetSessions", "Sessions", new string[]{"Admin"}),
