@@ -276,7 +276,7 @@
             }
 
             var anySession = await _context.Sessions.Where(s => s.Movie.Id == id).AnyAsync();
-            if (anySession == false)
+            if (anySession == true)
             {
                 return NotFound("Não é possivel apagar este filme, pois há sessões associadas.");
             }
